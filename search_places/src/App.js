@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useGlobalContext } from './GlobalContext';
-import SearchBox from './components/SearchBox';
-import ResultsTable from './components/ResultsTable';
-import Pagination from './components/Pagination';
-import LimitSelector from './components/LimitSelector';
-import { API_KEY, API_URL } from './api/keys';
-import './App.css';
+import { API_URL,API_KEY } from './api/keys';
 import dummyresp from './dummy_responce';
+import './App.css'
 
 const FLAG_API_URL = 'https://www.countryflagsapi.com/png/:file_type/:country_code';
 
 const App = () => {
-  const { searchQuery, setSearchQuery, isLoading, setIsLoading, currentPage, setCurrentPage, itemsPerPage, setItemsPerPage, totalPages, setTotalPages, limit, setLimit } = useGlobalContext();
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [totalPages, setTotalPages] = useState(0);
+  const [limit, setLimit] = useState(5);
 
   useEffect(() => {
     fetchSearchResults();
@@ -42,10 +42,16 @@ const App = () => {
       setSearchResults(dummyresp.data);
     } 
   };
-  // console.log(searchQuery);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetchSearchResults();
+    // fetchSearchResults();
+    console.log(searchQuery);
+    const data = searchResults.filter(curr=> curr.city===searchQuery );
+    setSearchResults(data);
   };
 
   const handlePaginationClick = (pageNumber) => {
@@ -62,33 +68,61 @@ const App = () => {
   };
 
   return (
-    <div className='search-container'>
-      <SearchBox
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onSubmit={handleSearchSubmit}
-      />
+    <div className='search-container' >
+      <form onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className='search-input'
+          placeholder="Search Places"
+        
+        />
+        <input type="submit" className='btn-submit' />
+      </form>
 
       {isLoading && <div>Loading...</div>}
 
       {searchResults.length === 0 && !isLoading && <div>No result found</div>}
-
-      <ResultsTable
-        searchResults={searchResults}
-        flagUrl={FLAG_API_URL}
-      />
-
+      <div className='table-container'>
+      <table className='results-table'>
+      <thead>
+              <tr>
+                <th>#</th>
+                <th>Place Name</th>
+                {/* <th>City</th> */}
+                <th>Country</th>
+                <th>Country Code</th>
+                <th>Region</th>
+              </tr>
+            </thead>
+            <tbody className='records'>
+              {searchResults.map((result, index) => (
+                <tr key={result.id}>
+                  <td>{index + 1}</td>
+                  {/* {console.log(result)} */}
+                  <td>{result.city}</td>
+                  <td>{result.country}</td>
+                  <td>{result.countryCode}</td>
+                  <td>{result.region}</td>
+                
+              
+                </tr>
+              ))}
+            </tbody>
+      </table>
+      </div>
       {totalPages > 0 && (
-        <Pagination
-          totalPages={totalPages}
-          onClick={handlePaginationClick}
-        />
+        <div>
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
+            <button key={pageNumber} onClick={() => handlePaginationClick(pageNumber)}>
+              {pageNumber}
+            </button>
+          ))}
+        </div>
       )}
 
-      <LimitSelector
-        limit={limit}
-        onChange={handleLimitChange}
-      />
+    
     </div>
   );
 };

@@ -45,6 +45,20 @@
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* Font family */
 }
 
+.btn-submit{
+  display: inline-block;
+  background-color: #5d6269;
+  color: #020101;
+  margin-left: 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-decoration: none;
+}
+
 .pagination-container {
   width: 100%;
   text-align: center;
@@ -79,11 +93,3 @@
   text-align: center; 
 }
 
-@media screen and (max-width: 600px) {
-  .results-table th,
-  .results-table td {
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-  }
-}
