@@ -4,8 +4,6 @@ import { API_URL,API_KEY } from './api/keys';
 import dummyresp from './dummy_responce';
 import './App.css'
 
-const FLAG_API_URL = 'https://www.countryflagsapi.com/png/:file_type/:country_code';
-
 const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
